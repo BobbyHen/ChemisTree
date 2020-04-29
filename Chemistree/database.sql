@@ -1,4 +1,6 @@
-CREATE DATABASE chemistree;
+-- CREATE DATABASE chemistree;
+CREATE USER 'mendeleev'@'localhost' IDENTIFIED BY 'periodic';
+GRANT ALL ON chemistree.* TO 'mendeleev'@'localhost';
 
 CREATE TABLE IF NOT EXISTS elements (
     abbreviation            VARCHAR(4)  NOT NULL,

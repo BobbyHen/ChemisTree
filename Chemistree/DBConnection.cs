@@ -13,17 +13,10 @@ namespace Chemistree_GUI_V1
 {
     class DBConnection
     {
-        // Database Credentials
-        // username: Pnf2SBF448
-        // password: lX19QKJIkA
-        // server: remotemysql.com
-        // database: Pnf2SBF448
-        // port: 3306
-
-        private string username = "Pnf2SBF448";
-        private string password = "lX19QKJIkA";
-        private string server = "remotemysql.com";
-        private string database = "Pnf2SBF448";
+        private string username = "mendeleev";
+        private string password = "periodic";
+        private string server = "localhost";
+        private string database = "chemistree";
         private int port = 3306;
         public Element e = new Element();
         private MySqlConnection conn;
