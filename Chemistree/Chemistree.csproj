@@ -68,6 +68,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SmallNumber.cs" />
+    <Compile Include="Ion.cs" />
+    <Compile Include="Element.cs" />
     <Compile Include="DBConnection.cs" />
     <Compile Include="DBInput.cs">
       <SubType>Form</SubType>

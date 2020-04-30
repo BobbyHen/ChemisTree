@@ -49,6 +49,9 @@ namespace Chemistree_GUI_V1
             this.conn.Close();
         }
 
+        //
+        // This was meant to submit element data to the element table.
+        //
         public bool SubmitDB(Element e)
         {
             bool result = false;
@@ -66,11 +69,13 @@ namespace Chemistree_GUI_V1
             return result;
         }
 
-
+        //
+        // This submits ion data to the ion table.
+        //
         public bool SubmitIonDB(Ion i)
         {
             bool result = false;
-            FormattableString sql = $"INSERT INTO ions (`abbreviation`, `name`, `charge`, `type`) VALUES ('{i.ionAbbr}', '{i.ionName}', '{i.ionCharge}', '{i.ionType}');";
+            FormattableString sql = $"INSERT INTO ions (`abbreviation`, `name`, `charge`, `type`) VALUES ('{i.abbr}', '{i.name}', '{i.charge}', '{i.ionType}');";
 
 
             try
@@ -87,8 +92,9 @@ namespace Chemistree_GUI_V1
             return result;
         }
 
-
-
+        //
+        //  This queries the database for a specific element by abbreviation.
+        //
         public (bool, Element) queryDB(string abbr)
         {
             bool result = false;
@@ -126,12 +132,15 @@ namespace Chemistree_GUI_V1
             return (result, e);
         }
 
+        //
+        // This queries the database for a specific ion by abbreviation, charge, and type. It's used to validate the existence of the ion.
+        //
         public void queryIonDB(ref Ion userIon, string ionType, ref string errorMessage)
         {
             bool result = false;
             string query = $"SELECT * FROM ions " +
-                           $"WHERE abbreviation = '{userIon.ionAbbr}'" +
-                           $"AND charge = '{userIon.ionCharge}'" +
+                           $"WHERE abbreviation = '{userIon.abbr}'" +
+                           $"AND charge = '{userIon.charge}'" +
                            $"AND type = '{ionType}'";
 
             try
@@ -144,7 +153,7 @@ namespace Chemistree_GUI_V1
 
                     while (reader.Read())
                     {
-                        userIon.ionName = reader["name"].ToString();
+                        userIon.name = reader["name"].ToString();
                     }
 
                     result = true;
@@ -163,158 +172,5 @@ namespace Chemistree_GUI_V1
                 errorMessage = "Encountered an issue with the database. Try again." + ex;
             }
         }
-    }
-
-    class Element
-    {
-        public string abbr;
-        public string name;
-        public string atomicNumber;
-        public string periodicGroup;
-        public string periodicPeriod;
-        public string electronConfiguration;
-
-        public Element()
-        {
-            this.abbr = "";
-            this.name = "";
-            this.atomicNumber = "";
-            this.periodicGroup = "";
-            this.periodicPeriod = "";
-            this.electronConfiguration = "";
-        }
-
-        public Element(string abbr, string name, string atomicNumber, string periodicGroup, string periodicPeriod, string electronConfiguration)
-        {
-            this.abbr = abbr;
-            this.name = name;
-            this.atomicNumber = atomicNumber;
-            this.periodicGroup = periodicGroup;
-            this.periodicPeriod = periodicPeriod;
-            this.electronConfiguration = electronConfiguration;
-        }
-    }
-
-    class Ion
-    {
-        public string ionAbbr;
-        public string ionName;
-        public int ionCharge;
-        public string ionType;
-
-
-
-        public Ion()
-        {
-            this.ionAbbr = "";
-            this.ionName = "";
-            this.ionCharge = 0;
-            this.ionType = "";
-
-        }
-
-        public Ion(string ionAbbr, string ionName, int ionCharge, string ionType)
-        {
-            this.ionAbbr = ionAbbr;
-            this.ionName = ionName;
-            this.ionCharge = ionCharge;
-            this.ionType = ionType;
-
-        }
-    }
-
-    class UnicodeConverter
-    {
-        public UnicodeConverter() {
-        }
-
-        //
-        // Converts to subscript or superscript using unicode values.
-        //
-        public string convertToSubscript(int n)
-        {
-            string subscript;
-
-            switch (n)
-            {
-                case 0:
-                    subscript = "\u2080";
-                    break;
-                case 1:
-                    subscript = "\u2081";
-                    break;
-                case 2:
-                    subscript = "\u2082";
-                    break;
-                case 3:
-                    subscript = "\u2083";
-                    break;
-                case 4:
-                    subscript = "\u2084";
-                    break;
-                case 5:
-                    subscript = "\u2085";
-                    break;
-                case 6:
-                    subscript = "\u2086";
-                    break;
-                case 7:
-                    subscript = "\u2087";
-                    break;
-                case 8:
-                    subscript = "\u2088";
-                    break;
-                case 9:
-                    subscript = "\u2089";
-                    break;
-                default:
-                    subscript = "";
-                    break;
-            }
-            return subscript;
-        }
-        public string convertToSuperscript(int n)
-        {
-            string superscript;
-
-            switch (n)
-            {
-                case 0:
-                    superscript = "\u2070";
-                    break;
-                case 1:
-                    superscript = "\u00B9";
-                    break;
-                case 2:
-                    superscript = "\u00B2";
-                    break;
-                case 3:
-                    superscript = "\u00B3";
-                    break;
-                case 4:
-                    superscript = "\u2074";
-                    break;
-                case 5:
-                    superscript = "\u2075";
-                    break;
-                case 6:
-                    superscript = "\u2076";
-                    break;
-                case 7:
-                    superscript = "\u2077";
-                    break;
-                case 8:
-                    superscript = "\u2078";
-                    break;
-                case 9:
-                    superscript = "\u2079";
-                    break;
-                default:
-                    superscript = "";
-                    break;
-            }
-            return superscript;
-        }
-
     }
 }

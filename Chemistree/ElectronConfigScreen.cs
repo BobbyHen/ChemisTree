@@ -25,11 +25,16 @@ namespace Chemistree_GUI_V1
 
         // 
         // Formats the electron configuration appropriately by finding the numbers that need to be converted to superscripts.
+        // Example of an electron configuration stored in the database: [Ar]3d^10,4s^2,4p^2
         //
         public static string formatElectronConfig(string config) {
-            UnicodeConverter uni = new UnicodeConverter();
+            SmallNumber uni = new SmallNumber();
+
+            // The configuration is split by each orbital. The "," separates each orbital.
             string[] splittedConfig = config.Split(',');
             string formattedConfig = "";
+
+            // These help determine which numbers are coefficients and which numbers are superscripts.
             int splitMarker = 0;
             int superNum;
             string superStr;
@@ -38,21 +43,28 @@ namespace Chemistree_GUI_V1
             {
                 int configLen = splittedConfig[i].Length;
 
+                // Loops through an individual orbital configuration 
                 for (int x = 0; x < configLen; x++)
                 {
+                    // The "^" indicates that the following character is a superscript.
                     if (splittedConfig[i][x] == '^')
                     {
                         splitMarker = x;
                     }
                 }
 
+                // This loops through the individual orbital configuration at the point where a character is the superscript.
+                // The positions of electrons in an orbital is from 1-14, so double digits can occur and confuse superscripts and coefficients.
                 for (int y = splitMarker; y < configLen - 1; y++)
                 {
                     int.TryParse(splittedConfig[i][y + 1].ToString(), out superNum);
                     superStr = uni.convertToSuperscript(superNum);
+
+                    // This replaces the array element with the subscript number.
                     splittedConfig[i] = splittedConfig[i].Replace(splittedConfig[i][y].ToString(), superStr.ToString());
                 }
 
+                // This removes the last element of the array
                 splittedConfig[i] = splittedConfig[i].Remove((configLen - 1), 1);
                 formattedConfig += splittedConfig[i];
 
@@ -121,23 +133,14 @@ namespace Chemistree_GUI_V1
             Application.Exit();
         }
 
-
-        //a function that will be used to check the database for every element button on the table.
-
-
-        //Custom method created to be able to use on every element in the table.
-        //This will allow us to pass the element letter as text.
-        //The text will be passed to the class DBConnection.
-        //The text is used to tell the database wich element we are looking for.
-        // it will execut a custom function from DB Connection that is execting the search.
-        // the search does not return the information.
-        //The btn query determines how the information is displayed.
-      
+        //
+        // This checks for a particular element button featured on the periodic table and returns its electron configuration to the GUI.
+        //
         private void btn_query(object sender, EventArgs e)
         {
             Button s = (System.Windows.Forms.Button)sender;
 
-            //the button text is passed into the argument of queryDB();
+            // The button text is passed into the argument of queryDB();
             (bool result, Element el) = conn.queryDB(s.Text);
             if (result)
             {

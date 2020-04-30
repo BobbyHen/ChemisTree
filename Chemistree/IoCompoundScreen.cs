@@ -28,7 +28,7 @@ namespace Chemistree_GUI_V1
         public static string displayIonNumber(int n)
         {
             string number;
-            UnicodeConverter uni = new UnicodeConverter();
+            SmallNumber uni = new SmallNumber();
 
             if (n == 1)
             {
@@ -64,27 +64,28 @@ namespace Chemistree_GUI_V1
         //
         // Formats the abbreviation of the ion to include subscripts.
         //
-        public static string formatIonAbbr(string ionAbbr) {
+        public static string formatabbr(string abbr) {
 
             string subNum;
-            UnicodeConverter uni = new UnicodeConverter();
+            SmallNumber uni = new SmallNumber();
 
-            for (int x = 0; x < ionAbbr.Length; x++) {
+            for (int x = 0; x < abbr.Length; x++) {
                 for (int i = 0; i <= 9; i++) {
 
-                    if (ionAbbr[x].ToString() == i.ToString()) {
+                    if (abbr[x].ToString() == i.ToString()) {
                         subNum = uni.convertToSubscript(i);
-                        ionAbbr = ionAbbr.Replace(ionAbbr[x].ToString(), subNum);
+                        abbr = abbr.Replace(abbr[x].ToString(), subNum);
 
-                        if (x == ionAbbr.Length - 1) {
-                            ionAbbr = "(" + ionAbbr + ")";
+                        // Adding parentheses avoids confusion between polyatomic ions and the number of polyatomic ions needed to create the compound.
+                        if (x == abbr.Length - 1) {
+                            abbr = "(" + abbr + ")";
                         }
                     } 
 
                 }
             }
             
-            return ionAbbr;
+            return abbr;
         }
 
 
@@ -172,23 +173,23 @@ namespace Chemistree_GUI_V1
 
             /** Cation properties **/
             Ion cation = new Ion();
-            cation.ionAbbr = cation_input.Text;
-            convertChargeToInt(cationChg_txt.Text, out cation.ionCharge, 1, ref errorMessage);
+            cation.abbr = cation_input.Text;
+            convertChargeToInt(cationChg_txt.Text, out cation.charge, 1, ref errorMessage);
 
             /** Anion properties **/
             Ion anion = new Ion();
-            anion.ionAbbr = anion_input.Text;
-            convertChargeToInt(anionChg_txt.Text, out anion.ionCharge, -1, ref errorMessage);
+            anion.abbr = anion_input.Text;
+            convertChargeToInt(anionChg_txt.Text, out anion.charge, -1, ref errorMessage);
 
             // These connect to the database and determines whether the ion entered exists or not.
-            // This also saves the name of the ion to the object property ionName.
+            // This also saves the name of the ion to the object property name.
             conn.queryIonDB(ref cation, "cation", ref errorMessage);
             conn.queryIonDB(ref anion, "anion", ref errorMessage);
 
             // Function determines how many anions and cations are needed to form the ionic compound.
-            findIonNums(cation.ionCharge, anion.ionCharge, out cationNum, out anionNum);
-            ionicCompound = formatIonAbbr(cation.ionAbbr) + displayIonNumber(cationNum) + formatIonAbbr(anion.ionAbbr) + displayIonNumber(anionNum);
-            ionicName = cation.ionName + " " + anion.ionName;
+            findIonNums(cation.charge, anion.charge, out cationNum, out anionNum);
+            ionicCompound = formatabbr(cation.abbr) + displayIonNumber(cationNum) + formatabbr(anion.abbr) + displayIonNumber(anionNum);
+            ionicName = cation.name + " " + anion.name;
 
             // Validation successful, and ionic compound was formed.
             if (errorMessage == "") {
